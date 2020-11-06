@@ -116,7 +116,7 @@ $('body').on('click', '.cells-container .cell.can-go', (e) => {
     dataCells.endPlayerDataX = $obj.data('x');
     dataCells.endPlayerDataY = $obj.data('y');
 
-    movePlayerConditions();
+    // movePlayerConditions();
     
     socket.emit('clickCanGo', dataCells);
 });
