@@ -76,17 +76,22 @@ module.exports = class Turn {
         io.in(channel).emit('checkWalls');
     };
 
-    playerMoveUpdateDom(io, channel, dataCells) {
+    playerMoveUpdateDom(io, channel, dataCells, game) {
         let dataPlayer = Data.currentPlayer.dataAttr;
-        let isWeapon = this.player.weapon;
-        // > if weapon
-        // let dataWeapon = this.player.weapon.dataAttr;
+        let playersWeapon = []
 
-        io.in(channel).emit('playerMoveUpdateDom', dataPlayer, isWeapon, dataCells);
+        // envoie les armes aux joueurs à chaque tour
+        game.arrOfPlayers.forEach(player => {
+            playersWeapon.push(
+                {'name': player.dataAttr,
+                'weapon':player.weapon.dataAttr
+                });
+        });
+
+        io.in(channel).emit('playerMoveUpdateDom', dataPlayer, dataCells, playersWeapon);
     };
 
     takeWeapon(io, channel, dataWeapons, weapon) {
-        // liées aux armes
         let canTakeWeapon = true;
         let ioC = io;
 
@@ -97,18 +102,16 @@ module.exports = class Turn {
                 } 
             };
 
-            let weaponUser = dataWeapons.cellWeapon;
             let player = this.player;
-            let dataCell = dataWeapons.currentCell;
-            
 
-            ioC.in(channel).emit('sendWeaponClient', weaponUser, canTakeWeapon, player, dataCell);
+            // Envoie les infos du joueur et de l'arme au channel
+            ioC.in(channel).emit('sendWeaponClient', canTakeWeapon, player, dataWeapons);
             
             // met à jour l'arme et le tableau du joueur
             this.player.weapon = weapon[0];
             this.player.updatePlayerDom(this.player, ioC, channel);
-        }
-    }
+        };
+    };
 
     checkEnemyForFight(attrEnemy, positionEnemy, attr, position) {
         if ($(`[data-${attrEnemy} = ${positionEnemy}][data-${attr} = ${position}]`).hasClass('player')) {

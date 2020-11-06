@@ -56,18 +56,15 @@ io.on('connection', socket =>  {
         let currentUser = users.filter(user => user.id === socket.id)[0];
         let channelUser = currentUser.channel;
 
-        // // récup des armes
-        // game.turn.takeWeapon(io, channelUser, dataCells)
-
         // met à jour la position du joueur sur la case
-        game.turn.playerMoveUpdateDom(io, channelUser, dataCells);
+        game.turn.playerMoveUpdateDom(io, channelUser, dataCells, game);
 
         Utils.selectPlayer(io, channelUser);
         game.turn = new Turn(io, channelUser, socket);
     });
 
     socket.on('dataWeaponsClient', (dataWeapons) => {
-        // au click sur une case '.can-go'
+        // récupération des infos de l'arme du DOM
         let weapon = game.arrOfWeapons.filter(weapon => weapon.dataAttr === dataWeapons.cellWeapon);
         let currentUser = users.filter(user => user.id === socket.id)[0];
         let channelUser = currentUser.channel;

@@ -116,21 +116,22 @@ $('body').on('click', '.cells-container .cell.can-go', (e) => {
     dataCells.endPlayerDataX = $obj.data('x');
     dataCells.endPlayerDataY = $obj.data('y');
 
-    // movePlayerConditions();
+    movePlayerConditions();
     
     socket.emit('clickCanGo', dataCells);
 });
 
 // maj du joueur qui vient de se déplacer
-socket.on('playerMoveUpdateDom', (dataPlayer, isWeapon, cells, dataWeapon) => {
+socket.on('playerMoveUpdateDom', (dataPlayer, cells, playersWeapon) => {
     $(`.cell`).removeClass('can-go');
     $(`.cell`).removeClass('attack-enemy');
     $(`[data-player = ${dataPlayer}]`).removeClass(`player to-left`).removeAttr('data-player data-player-weapon').removeClass('current-player');
     $(`[data-x = ${cells.endPlayerDataX}][data-y = ${cells.endPlayerDataY}]`).attr('data-player', dataPlayer).addClass('player');
 
-    if (isWeapon !== 'Aucune') {
-        $(`[data-x = ${dataCells.endPlayerDataX}][data-y = ${dataCells.endPlayerDataY}]`).attr('data-player-weapon', dataWeapon);
-    }
+    // maj des armes des joueurs à chaque déplacement
+    playersWeapon.forEach(player => {
+        $(`[data-player = ${player.name}]`).attr('data-player-weapon', player.weapon);
+    });
 
     $('.cell').off("click");
 });
@@ -140,6 +141,7 @@ socket.on('selectPlayer', () => {
     $(`body`).removeClass(`player1`);
 });
 
+// observe la position de déplacement
 function movePlayerConditions() {
     if (dataCells.startPlayerDataY === dataCells.endPlayerDataY && dataCells.startPlayerDataX <= dataCells.endPlayerDataX) {
         let incrementAttribute = 'data-x';
@@ -175,6 +177,7 @@ function movePlayerConditions() {
     };
 };
 
+// envoie info sur l'arme et sa position au serveur
 function takeWeapon(startLoop, endLoop, staticDataYX, incrementAttribute, staticAttribute) {
     for (let i = startLoop; i <= endLoop; i++) {
         // récup de l'arme on envoie côté serveur
@@ -186,40 +189,49 @@ function takeWeapon(startLoop, endLoop, staticDataYX, incrementAttribute, static
             'incrementAttribute':incrementAttribute, 
             'i':i, 
             'staticAttribute':staticAttribute, 
-            'staticDataYX':staticDataYX 
+            'staticDataYX':staticDataYX,
         }
 
         let dataWeapons = {
             'cellWeapon' : cellWeapon,
             'isWeaponPlayer' : classWeaponPlayer,
-            'currentCell' : currentCellData
+            'currentCell' : currentCellData,
+            'dataCells' : dataCells
         }
 
         socket.emit('dataWeaponsClient', dataWeapons);
     };
 };
 
-socket.on('sendWeaponClient', (weaponUser, canTakeWeapon, player, dataCells) => {
-    let $currentCell = $(`[${dataCells.incrementAttribute}=${dataCells.i}][${dataCells.staticAttribute}=${dataCells.staticDataYX}]`);
+// récupération des infos de l'arme du serveur
+// affichage de l'arme dans le DOM
+socket.on('sendWeaponClient', (canTakeWeapon, player, dataWeapons) => {
+    let $currentCell = $(`[${dataWeapons.currentCell.incrementAttribute}=${dataWeapons.currentCell.i}][${dataWeapons.currentCell.staticAttribute}=${dataWeapons.currentCell.staticDataYX}]`);
 
-    console.log("sendWeaponClient")
     // quand un joueur passe sur une arme
-        if (canTakeWeapon) { // -> donnée à récup en client
-            if (player.weapon !== 'Aucune') { // -> donnée à récup client / boolean
-                $currentCell.addClass('weapon'); // -> client /récup cell de serveur
-                $currentCell.attr('data-weapon', player.weapon.dataAttr).removeClass('vide'); 
-            } else {
-                $currentCell.removeAttr('data-weapon').removeClass('weapon').addClass('vide'); 
-            }
+    if (canTakeWeapon) { // -> donnée à récup en client
+        if (player.weapon !== 'Aucune') {
+            $currentCell.addClass('weapon');
+            $currentCell.attr('data-weapon', player.weapon.dataAttr).removeClass('vide');
+        } else {
+            $currentCell.removeAttr('data-weapon').removeClass('weapon').addClass('vide');
+        }
 
-            console.log(dataCells.endPlayerDataX)
-            console.log(dataCells.endPlayerDataY)
-
-            if (weaponUser !== 'undefined') {
-                $(`[data-x = ${dataCells.endPlayerDataX}][data-y = ${dataCells.endPlayerDataY}]`).attr('data-player-weapon', weaponUser);
-            };
+        if (dataWeapons.cellWeapon !== 'undefined') {
+            $(`[data-x = ${dataWeapons.dataCells.endPlayerDataX}][data-y = ${dataWeapons.dataCells.endPlayerDataY}]`).attr('data-player-weapon', dataWeapons.cellWeapon);
         };
+    };
 });
+
+
+
+
+
+
+
+
+
+
 
 
 socket.on('socketTest', channel => {
