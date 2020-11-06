@@ -11,6 +11,7 @@ const channels = [
     { name: "channel3" },
 ];
 
+
 let game;
 
 function addToChannel(channel, socket) {
