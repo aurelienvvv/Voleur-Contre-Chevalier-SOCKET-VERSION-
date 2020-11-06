@@ -1,5 +1,19 @@
 const PORT = process.env.PORT || 3000;
-const io = require('socket.io')(PORT);
+const express = require('express');
+const app = express();
+var http = require('http').createServer(app);
+var io = require('socket.io')(http);
+
+app.use('/src', express.static('src'))
+
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
+});
+
+http.listen(PORT, () => {
+    console.log('listening on *:3000');
+});
+
 const Utils  = require("./src/js/Utils");
 const Turn  = require("./src/js/Turn");
 const Game  = require("./src/js/Game");
