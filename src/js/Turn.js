@@ -79,10 +79,36 @@ module.exports = class Turn {
     playerMoveUpdateDom(io, channel, dataCells) {
         let dataPlayer = Data.currentPlayer.dataAttr;
         let isWeapon = this.player.weapon;
-        let dataWeapon = this.player.weapon.dataAttr;
+        // > if weapon
+        // let dataWeapon = this.player.weapon.dataAttr;
 
-        io.in(channel).emit('playerMoveUpdateDom', dataPlayer, isWeapon, dataCells, dataWeapon);
+        io.in(channel).emit('playerMoveUpdateDom', dataPlayer, isWeapon, dataCells);
     };
+
+    takeWeapon(io, channel, dataWeapons, weapon) {
+        // liées aux armes
+        let canTakeWeapon = true;
+        let ioC = io;
+
+        if (dataWeapons.cellWeapon) {
+            if (this.player.weapon !== 'Aucune') { 
+                if (dataWeapons.isWeaponPlayer) {
+                    canTakeWeapon = false; 
+                } 
+            };
+
+            let weaponUser = dataWeapons.cellWeapon;
+            let player = this.player;
+            let dataCell = dataWeapons.currentCell;
+            
+
+            ioC.in(channel).emit('sendWeaponClient', weaponUser, canTakeWeapon, player, dataCell);
+            
+            // met à jour l'arme et le tableau du joueur
+            this.player.weapon = weapon[0];
+            this.player.updatePlayerDom(this.player, ioC, channel);
+        }
+    }
 
     checkEnemyForFight(attrEnemy, positionEnemy, attr, position) {
         if ($(`[data-${attrEnemy} = ${positionEnemy}][data-${attr} = ${position}]`).hasClass('player')) {
