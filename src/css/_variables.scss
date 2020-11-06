@@ -1,0 +1,27 @@
+// COLORS //
+$white: rgb(255, 255, 255);
+$black: hsl(0, 0%, 5%);
+$lightgrey: rgb(190, 190, 190);
+$darkgrey: hsl(0, 0%, 23%);
+$darkblue: rgb(16,18,54);
+$lightviolet: rgb(252, 163, 255);
+$violet: rgb(117, 55, 153);
+$darkviolet: rgb(54, 31, 68);
+$blue: rgb(55, 57, 153);
+$skyblue: rgb(138, 222, 255);
+
+$color-poing: rgb(114, 194, 114);
+$color-baton: rgb(79, 117, 187);
+$color-lance: rgb(218, 120, 90);
+$color-epee: rgb(179, 70, 194);
+$color-shuriken: rgb(156, 163, 206);
+$color-hache: rgb(175, 194, 70);
+$color-marteau: rgb(194, 140, 70);
+
+$color-options: $darkgrey;
+$color-player-1: $violet;
+$color-player-2: $blue;
+
+// BREAKPOINTS //
+$tablet: 768px;
+$mobile: 425px;

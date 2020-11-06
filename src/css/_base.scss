@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Metal+Mania&family=VT323&family=Contrail+One&display=swap');
+
+body,
+html {
+    font-family: 'VT323', monospace;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-color: $black;
+    box-sizing: border-box;
+}
+
+.mobile-screen {
+    display: none;
+
+    @media (max-width: $mobile) {
+        display: block;
+    }
+}
+
+.btn-custom {
+    cursor: pointer;
+    font-family: 'VT323', monospace;
+    font-size: 25px;
+    padding: 10px 35px;
+    background-color: rgb(55, 57, 153);
+    border: 0;
+    outline: 0;
+    color: $white;
+    transition: .3s;
+    box-shadow: 4px 4px 0 $lightviolet;
+    z-index: 1000;
+    
+    &:hover {
+        background-color: rgb(91, 92, 156);
+        box-shadow: 2px 2px 0 $lightviolet;
+
+    }
+
+    &:focus {
+        box-shadow: 0 0 0 $lightviolet;
+    }
+}

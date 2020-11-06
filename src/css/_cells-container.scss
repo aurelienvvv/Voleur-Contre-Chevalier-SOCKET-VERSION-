@@ -1,0 +1,269 @@
+// Style du plateau de jeu + cases et leurs contenus
+.cells-container {
+    display: flex;
+    align-items: center;
+    min-height: 80vh;
+    
+
+    .cells {
+        margin: auto;
+        width: 500px;
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        list-style: none;
+        padding: 0;
+        transition: .5s ease-in-out;
+
+        @media (max-width: $mobile) {
+            width: 300px;
+            grid-template-columns: repeat(6, 1fr);
+        }
+
+        .cell {
+            width: 50px;
+            height: 50px;
+            border: 1px solid rgb(32, 32, 32);
+            box-sizing: border-box;
+
+            &.vide {
+                background: #30293e;
+            }
+
+            &.innacessible {
+                background-image: url(../img/floor.jpg);
+                background-size: contain;
+            }
+
+            &.weapon,
+            &.player {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: 75%;
+                transition: background .3s;
+            }
+
+
+            &.player {
+                &.to-left {
+                    transform: scaleX(-1);
+                }
+
+                &.protect {
+                    position: relative;
+
+                    &:before {
+                        content: '';
+                        position: absolute;
+                        bottom: 5px;
+                        right: 5px;
+                        height: 20px;
+                        width: 20px;
+                        background-image: url(../img/shield.png);
+                        background-repeat: no-repeat;
+                        background-position: center;
+                        background-size: 100%;
+                    }
+                }
+
+                &.you-win {
+                    position: relative;
+                    animation: move-winner 1s infinite;
+                    z-index: 10;
+
+                    &:before {
+                        content: '';
+                        position: absolute;
+                        bottom: 22px;
+                        right: 12px;
+                        height: 18px;
+                        width: 18px;
+                        background-image: url(../img/lunettes.png);
+                        background-repeat: no-repeat;
+                        background-position: center;
+                        background-size: 100%;
+                    }
+                }
+
+                &.you-loose {
+                    transform: rotate(-90deg) translateX(-10px);
+                    z-index: 1;
+
+                    &.left-enemy {
+                        transform: rotate(90deg) translateX(10px) scaleX(-1);
+                    }
+                }
+
+                &.attacked {
+                    &.right-enemy {
+                         @include anim-hit(translateX(0), translateX(-10px), scaleX(1), anim-attacked-right);
+                    }
+                    &.left-enemy {
+                         @include anim-hit(translateX(0), translateX(10px), scaleX(-1), anim-attacked-left);
+                    }
+                    &.top-enemy {
+                         @include anim-hit(translateY(0), translateY(10px), scaleX(1), anim-attacked-top);
+                    }
+                    &.bottom-enemy {
+                         @include anim-hit(translateY(0), translateY(-10px), scaleX(1), anim-attacked-bottom);
+                    }
+                }
+
+                &.attack-now {
+                    &.right-enemy {
+                        @include anim-hit(translateX(-10px), translateX(50px), scaleX(1), attack-anim-right);
+                    }
+
+                    &.left-enemy {
+                        @include anim-hit(translateX(10px), translateX(-50px), scaleX(-1), attack-anim-left);
+                    }
+
+                    &.top-enemy {
+                        @include anim-hit(translateY(10px), translateY(-50px), scaleX(1), attack-anim-top);
+                    }
+
+                    &.bottom-enemy {
+                        @include anim-hit(translateY(-10px), translateY(50px), scaleX(1), attack-anim-bottom);
+                    }
+                }
+
+                &[data-player-weapon] {
+                    position: relative;
+
+                    &:after {
+                        content: '';
+                        position: absolute;
+                        bottom: 5px;
+                        left: 5px;
+                        height: 20px;
+                        width: 20px;
+                        background-repeat: no-repeat;
+                        background-position: center;
+                        background-size: 100%;
+                    }
+
+                    &[data-player-weapon='marteau'] {
+                        &:after {
+                            background-image: url(../img/marteau.png);
+                        }
+                    }
+
+                    &[data-player-weapon='poing'] {
+                        &:after {
+                            background-image: url(../img/poing.png);
+                        }
+                    }
+
+                    &[data-player-weapon='baton'] {
+                        &:after {
+                            background-image: url(../img/baton.png);
+                        }
+                    }
+
+                    &[data-player-weapon='shuriken'] {
+                        &:after {
+                            background-image: url(../img/shuriken.png);
+                        }
+                    }
+
+                    &[data-player-weapon='lance'] {
+                        &:after {
+                            background-image: url(../img/lance.png);
+                        }
+                    }
+
+                    &[data-player-weapon='hache'] {
+                        &:after {
+                            background-image: url(../img/hache.png);
+                        }
+                    }
+
+                    &[data-player-weapon='epee'] {
+                        &:after {
+                            background-image: url(../img/epee.png);
+                        }
+                    }
+                }
+            }
+
+            &.can-go {
+                cursor: pointer;
+                background-color: #78679b;
+                animation: anim-cell .5s infinite;
+            }
+            
+            &[data-weapon="poing"] {
+                background-image: url('../img/poing.png');
+                background-color: $color-poing;
+            }
+            
+            &[data-weapon="baton"] {
+                background-image: url('../img/baton.png');
+                background-color: $color-baton;
+            }
+            
+            &[data-weapon="lance"] {
+                background-image: url('../img/lance.png');
+                background-color: $color-lance;
+            }
+
+            &[data-weapon="epee"] {
+                background-image: url('../img/epee.png');
+                background-color: $color-epee;
+            }
+
+            &[data-weapon="shuriken"] {
+                background-image: url('../img/shuriken.png');
+                background-color: $color-shuriken;
+            }
+
+            &[data-weapon="hache"] {
+                background-image: url('../img/hache.png');
+                background-color: $color-hache;
+            }
+
+            &[data-weapon="marteau"] {
+                background-image: url('../img/marteau.png');
+                background-color: $color-marteau;
+            }
+
+            &[data-player="player1"] {
+                background-image: url('../img/player-1.png');
+                z-index: 10;
+
+                .fight-time & {
+                    border: 0;
+                }
+
+                &.current-player {
+                    background-color: $color-player-1;
+                    z-index: 1;
+                }
+
+                &.you-loose {
+                    background-image: url('../img/player-1-loose.png');
+                }
+            }
+
+            &[data-player="player2"] {
+                background-image: url('../img/player-2.png');
+                z-index: 10;
+
+                .fight-time & {
+                    border: 0;
+                }
+                
+                &.current-player {
+                    background-color: $color-player-2;
+                    z-index: 1;
+                }
+
+                &.you-loose {
+                    background-image: url('../img/player-2-loose.png');
+                }
+            }
+        }
+    }
+}

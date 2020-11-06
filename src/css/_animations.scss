@@ -1,0 +1,187 @@
+// ANIMATIONS //
+
+@keyframes move-winner {
+    0% {transform: translateY(0);}
+    30% {transform: translateY(0);}
+    40% {transform: translateY(-30px);}
+    45% {transform: translateY(0);}
+    70% {transform: translateY(0);}
+    80% {transform: translateY(-30px);}
+    85% {transform: translateY(0px);}
+    100% {transform: translateY(0);}
+}
+
+@keyframes player-jump {
+    0% {transform: translateY(0);}
+    5% {transform: translateY(0);}
+    10% {transform: translateY(-50px);}
+    15% {transform: translateY(0);}
+    60% {transform: translateY(0);}
+    75% {transform: translateY(0);}
+    80% {transform: translateY(-50px);}
+    85% {transform: translateY(0);}
+    100% {transform: translateY(0);}
+}
+
+@keyframes player-jump-2 {
+    0% {transform: translateY(0) scaleX(-1);}
+    5% {transform: translateY(0) scaleX(-1);}
+    10% {transform: translateY(-50px) scaleX(-1);}
+    15% {transform: translateY(0) scaleX(-1);}
+    60% {transform: translateY(0) scaleX(-1);}
+    75% {transform: translateY(0) scaleX(-1);}
+    80% {transform: translateY(-50px) scaleX(-1);}
+    85% {transform: translateY(0) scaleX(-1);}
+    100% {transform: translateY(0) scaleX(-1);}
+}
+
+@keyframes fight-background-player {
+    0% {background-color: #181818;}
+    10% {background-color: #181818;}
+    15% {background-color: $darkviolet;}
+    20% {background-color: #181818;}
+    25% {background-color: $darkviolet;}
+    35% {background-color: #181818;}
+    100% {background-color: #181818;}
+}
+
+@keyframes fight-background-player-2 {
+    0% {background-color: #181818;}
+    10% {background-color: #181818;}
+    15% {background-color: $darkblue;}
+    20% {background-color: #181818;}
+    25% {background-color: $darkblue;}
+    35% {background-color: #181818;}
+    100% {background-color: #181818;}
+}
+
+@keyframes weapons-rain {
+    0% {
+        opacity: 0;
+        top: 0;
+        left: 70%;
+    }
+    20% {opacity: 1;}
+    70% {opacity: 1;}
+    100% {
+        transform: rotate(360deg);
+        top: 110%;
+        left: 10%;
+    }
+}
+
+@keyframes weapons-rain-2 {
+    0% {
+        opacity: 0;
+        top: 0;
+        left: 20%;
+    }
+    20% {opacity: 1;}
+    70% {opacity: 1;}
+    100% {
+        transform: rotate(360deg);
+        top: 110%;
+        left: 80%;
+    }
+}
+
+@mixin anim-hit($tr1, $tr2, $scaleX, $anim) {
+    animation: $anim .5s;
+    @if ($anim == attack-anim-right) {
+        @keyframes attack-anim-right {
+            0% {transform: translateX(0px)  $scaleX;}
+            50% {transform: $tr1 $scaleX;}
+            65% {transform: $tr2 $scaleX;}
+            75% {transform: $tr2 $scaleX;}
+            100% {transform: translateX(0px) $scaleX;}
+        }
+    }
+    @else if ($anim == attack-anim-left) {
+        @keyframes attack-anim-left {
+            0% {transform: translateX(0px)  $scaleX;}
+            50% {transform: $tr1 $scaleX;}
+            65% {transform: $tr2 $scaleX;}
+            75% {transform: $tr2 $scaleX;}
+            100% {transform: translateX(0px) $scaleX;}
+        }
+    }
+    @else if ($anim == attack-anim-top) {
+        @keyframes attack-anim-top {
+            0% {transform: translateX(0px)  $scaleX;}
+            50% {transform: $tr1 $scaleX;}
+            65% {transform: $tr2 $scaleX;}
+            75% {transform: $tr2 $scaleX;}
+            100% {transform: translateX(0px) $scaleX;}
+        }
+    }
+    @else if ($anim == attack-anim-bottom) {
+        @keyframes attack-anim-bottom {
+            0% {transform: translateX(0px)  $scaleX;}
+            50% {transform: $tr1 $scaleX;}
+            65% {transform: $tr2 $scaleX;}
+            75% {transform: $tr2 $scaleX;}
+            100% {transform: translateX(0px) $scaleX;}
+        }
+    }
+
+    @else if ($anim == anim-attacked-bottom){
+        @keyframes anim-attacked-bottom {
+            0% {transform: translateX(0px)  $scaleX;;}
+            50% {transform: $tr1 $scaleX; background-color: inherit;}
+            65% {transform: $tr2 $scaleX rotate(-35deg); background-color: rgb(255, 94, 94);}
+            75% {transform: $tr2 $scaleX; background-color: inherit;}
+            100% {transform: translateX(0px) $scaleX;}
+        }
+    }
+
+    @else if ($anim == anim-attacked-top){
+        @keyframes anim-attacked-top {
+            0% {transform: translateX(0px)  $scaleX;}
+            50% {transform: $tr1 $scaleX; background-color: inherit;}
+            65% {transform: $tr2 $scaleX rotate(-35deg); background-color: rgb(255, 94, 94);}
+            75% {transform: $tr2 $scaleX; background-color: inherit;}
+            100% {transform: translateX(0px) $scaleX;}
+        }
+    }
+
+    @else if ($anim == anim-attacked-left){
+        @keyframes anim-attacked-left {
+            0% {transform: translateX(0px)  $scaleX;}
+            50% {transform: $tr1 $scaleX; background-color: inherit;}
+            65% {transform: $tr2 $scaleX rotate(-35deg); background-color: rgb(255, 94, 94);}
+            75% {transform: $tr2 $scaleX; background-color: inherit;}
+            100% {transform: translateX(0px) $scaleX;}
+        }
+    }
+
+    @else if ($anim == anim-attacked-right){
+        @keyframes anim-attacked-right {
+            0% {transform: translateX(0px)  $scaleX;}
+            50% {transform: $tr1 $scaleX; background-color: inherit;}
+            65% {transform: $tr2 $scaleX rotate(-35deg); background-color: rgb(255, 94, 94);}
+            75% {transform: $tr2 $scaleX; background-color: inherit;}
+            100% {transform: translateX(0px) $scaleX;}
+        }
+    }
+}
+
+
+@keyframes anim-cell {
+    0% {background-color: #78679b;}
+    50% {background-color: #a08acc;}
+    100% {background-color: #78679b;}
+}
+
+@keyframes opacity-changing {
+    0% {
+        opacity: .7;
+    }
+    
+    50% {
+        opacity: 1;
+    }
+    
+    100% {
+        opacity: .7;
+    }
+}

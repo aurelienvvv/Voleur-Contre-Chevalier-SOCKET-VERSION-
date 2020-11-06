@@ -1,0 +1,457 @@
+.game-container {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+
+    .win-screen {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        position: absolute;
+        top: -500%;
+        left: 50%;
+        height: 101%;
+        width: 100%;
+        transform: translateX(-50%) translateY(-50%);
+        text-align: center;
+        background-color: rgb(24, 24, 24);
+        z-index: 100;
+        transition: 1s cubic-bezier(0.645, 0.045, 0.355, 1);
+
+        &:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            background-color: rgba(black, .2);
+            clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%);
+            z-index: -1;
+        }
+
+        .title {
+            color: $white;
+            font-size: 30px;
+            margin-bottom: 50px;
+            
+            .winner-win-text {
+                display: block;
+                font-family: 'Contrail One', cursive;
+                text-transform: uppercase;
+                text-shadow: 0px 5px 1px $lightviolet;
+                font-size: 70px;
+
+                .player2 & {
+                    text-shadow: 0px 5px 1px $skyblue;
+                }
+            }
+        }
+
+        .img-winner {
+            height: 100px;
+            width: 100px;
+            background-position: center;
+            background-size: cover;
+            margin-bottom: 50px;
+            transition: .5s cubic-bezier(0.95, 0.05, 0.795, 0.035);
+            animation: move-winner 2s infinite;
+
+            &.player1 {
+                background-image: url('../img/player-1.png');
+            }
+            
+            &.player2 {
+                background-image: url('../img/player-2.png');
+            }
+        }
+
+        .reload-btn {
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            font-size: 25px;
+            padding: 10px 35px;
+            background-color: rgb(55, 57, 153);
+            border: 0;
+            outline: 0;
+            color: $white;
+            transition: .3s;
+            box-shadow: 4px 4px 0 $lightviolet;
+
+            .player2 & {
+                box-shadow: 4px 4px 0 $skyblue;
+            }
+            
+            &:hover {
+                background-color: rgb(91, 92, 156);
+                box-shadow: 2px 2px 0 $lightviolet;
+
+                .player2 & {
+                    box-shadow: 2px 2px 0 $skyblue;
+                }
+            }
+
+            &:focus {
+                box-shadow: 0 0 0 $lightviolet;
+
+                .player2 & {
+                    box-shadow: 0 0 0 $skyblue;
+                }
+            }
+        }
+
+        &.active {
+            top: 50%;
+        }
+    }
+
+    .start-screen {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        position: absolute;
+        top: -200%;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background-color: rgb(24, 24, 24);
+        z-index: 100;
+        transition: 1s  ease-in-out;
+        transition-delay: .3s;
+        overflow: hidden;
+
+        &:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            background-color: rgba(black, .2);
+            clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%);
+            z-index: -1;
+        }
+
+        &.active {
+            top: 0;
+
+            .players {
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            .title {
+                transform: translateY(0) translateX(-25px);
+
+                @media (max-width: $mobile) {
+                    transform: translateY(0) translateX(-15px);
+                }
+            }
+
+            .start-btn {
+                transform: translateY(0);
+            }
+        }
+
+        .title {
+            font-family: 'Contrail One', cursive;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            color: $white;
+            font-size: 95px;
+            text-align: left;
+            line-height: 1;
+            transform: translateY(-200%);
+            transition: .5s ease-in-out;
+            transition-delay: .2s;
+
+            @media (max-width: $mobile) {
+                font-size: 63px;
+                margin-bottom: 30px;
+            }
+            
+
+            .anim {
+                animation: title-shadow 1s infinite;
+
+                &:last-child {
+                    display: block;
+                    transform: translateX(50px);
+                }
+            }
+
+            .sm {
+                position: relative;
+                // display: block;
+                margin: -20px auto -15px;
+                padding: 12px;
+                font-family: 'VT323', monospace;
+                font-size: 35px;
+                border-radius: 50%;
+
+                // background-color: $blue;
+                // box-shadow: 0 0 10px $black;
+            }
+        }
+
+        @keyframes title-shadow {
+            0% {text-shadow: 0px 5px 1px $lightviolet;}
+            40% {text-shadow: 0px 5px 1px $skyblue;}
+            80% {text-shadow: 0px 5px 1px $lightviolet;}
+            100% {text-shadow: 0px 5px 1px $skyblue;}
+        }
+
+        .start-btn {
+            transition: .3s ease-in-out;
+            transform: translateY(100%);
+        }
+
+
+        .players {
+            display: flex;
+            position: absolute;
+            margin-bottom: 30px;
+            width: 800px;
+            top: -100%;
+            justify-content: space-between;
+            flex-direction: column;
+            transition: .7s ease-in-out;
+
+            @media (max-width: $tablet) {
+                height: 90%;
+                width: 80%;
+            }
+
+            @media (max-width: $mobile) {
+                height: 80%;
+            }
+
+            .player {
+                img {
+                    height: 140px;
+                    animation : player-jump 2s infinite;
+                    animation-delay: 1.5s;
+
+                    @media (max-width: $mobile) {
+                        height: 100px;
+                    }
+
+                    @media (max-width: $mobile) {
+                        height: 80px;
+                    }
+                }
+
+                &:last-child {
+                    transform: scaleX(-1);
+                    animation : player-jump-2 2s infinite;
+                    animation-delay: 1s;
+                }
+            }
+        }
+
+        .weapon-decoration {
+            position: absolute;
+            top: 0;
+            height: 80px;
+            width: 80px;
+            background-image: url('/src/img/epee.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+            animation: weapons-rain-2 2s infinite;
+        }
+    }
+
+    .click-to-play {
+        position: fixed;
+        top: -100%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 100000;
+        padding: 60px;
+        background: $darkblue;
+
+        &.active {
+            top: 50%;
+        }
+    }
+
+    #name-form {
+        background: $darkblue;
+        position: fixed;
+        top: -100%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 100000;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 60px;
+        color: $white;
+        transition: 1s;
+
+        input {
+            font-size: 20px;
+            padding: 10px 20px;
+            outline: none;
+            background-color: transparent;
+            color: $white;
+            border: 1px solid rgba(white, .2);
+        }
+
+        label {
+            font-size: 25px;
+            margin-bottom: 30px;
+        }
+
+        input {
+            margin-bottom: 30px;
+        }
+
+        &.active {
+            top: 50%;
+        }
+    }
+
+    input[type='radio'][name='channel'] {
+        opacity: 0;
+    }
+
+    input[type='radio'][name='channel']:checked + label {
+        background-color: $violet;
+    }
+
+    input[type='radio'][name='channel']:disabled + label {
+        background-color: $lightgrey;
+    }
+}
+
+.fight-time-text {
+    &:after {
+        content: 'fight';
+        opacity: 0;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translateY(-50%) translateX(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        height: 100%;
+        width: 100%;
+        
+        font-family: 'Contrail One', cursive;
+        text-transform: uppercase;
+        text-shadow: 0px 5px 1px $lightviolet;
+        font-size: 200px;
+        color: $white;
+        
+        z-index: -1;
+        transition: .5s;
+
+        @media (max-width: $mobile) {
+            font-size: 150px;
+        }
+    }
+
+    &.active {
+        &:after {
+            opacity: 0;
+            z-index: 30;
+            animation: fight-text 1.3s 2;
+        }
+    }
+}
+
+@keyframes fight-text {
+    0% {opacity: 0; background-color:  #181818;}
+    20% {opacity: 1; }
+    40% {opacity: 0;}
+    60% {opacity: 1; content: 'time'; background-color: #181818;}
+    80% {opacity: 0; }
+    100% {opacity: 1;}
+}
+
+.fight-time {
+    &.player1 {
+        animation: fight-background-player 2s infinite;
+    }
+    
+    &.player2 {
+        animation: fight-background-player-2 2s infinite;
+    }
+
+    &.top-enemy {
+        .player {
+            top: calc(50% - 50px);
+            left: 50%;
+        }
+    }
+
+    .cells-container {
+        overflow: hidden;
+
+        .cells {
+            
+            &.-flex-cells {
+                transform: scale(2.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            &.vertical-fight {
+                flex-direction: column;
+            }
+
+            .cell {
+                background-color: transparent;
+
+                &.disapered {
+                    transition: .5s;
+                    opacity: 0;
+                }
+
+                &.vide {
+                    background-color: transparent;
+                }
+
+                &.position-fight {
+                    &.bottom-enemy {
+                        top: calc(50% - 50px);
+                    }
+
+                    &.right-enemy {
+                        left: calc(50% - 50px);
+                    }
+
+                    &.top-enemy {
+                        top: calc(50% + 50px);
+                    }
+
+                    &.left-enemy {
+                        left: calc(50% + 50px);
+                    }
+                }
+
+                &[data-player="player1"] {
+                    &.current-player {
+                        background-color: $color-player-1;
+                        z-index: 1;
+                    }
+                }
+
+                &[data-player="player2"] {
+                    
+                    &.current-player {
+                        background-color: $color-player-2;
+                        z-index: 1;
+                    }
+                }
+            }
+        }
+    }
+}
+
