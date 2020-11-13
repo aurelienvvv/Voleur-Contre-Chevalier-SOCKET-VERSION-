@@ -1,4 +1,6 @@
-// Affichage des cases can-go
+// ******************************* //
+// AFFICHAGE DES CASES ACCESSIBLES //
+// ******************************* //
 socket.on('whereCanGo', () => {
     let dataXMin = positionPlayer.playerDataX - 3;
     let dataXMax = positionPlayer.playerDataX + 4;

@@ -1,7 +1,11 @@
-// INIT EVENT // EVENEMENT AU CLICK SUR UNE CASE
+// ***************************************** //
+// AU CLICK CHANGEMENT DE POSITION DU JOUEUR //
+// ***************************************** //
 $('body').on('click', '.cells-container .cell.can-go', (e) => {
     let $obj = $(e.currentTarget);
     let $currentPlayer = $('.current-player');
+
+    console.log($currentPlayer);
 
     dataCells.startPlayerDataX = $currentPlayer.data('x');
     dataCells.startPlayerDataY = $currentPlayer.data('y');
@@ -13,7 +17,9 @@ $('body').on('click', '.cells-container .cell.can-go', (e) => {
     socket.emit('clickCanGo', dataCells);
 });
 
-// maj du joueur qui vient de se déplacer
+// ****************************** //
+// MAJ DU DOM LIE AU DEPLACEMENTS //
+// ****************************** //
 socket.on('playerMoveUpdateDom', (dataPlayer, cells, playersWeapon, fightTime) => {
     $(`.cell`).removeClass('can-go');
     $(`.cell`).removeClass('attack-enemy');

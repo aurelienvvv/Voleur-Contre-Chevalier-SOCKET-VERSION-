@@ -1,4 +1,7 @@
-// TURN
+// ********************************* //
+// PLACEMENT DES JOUEURS + VARIABLES //
+// ********************************* //
+
 let positionPlayer = {};
 let dataCells = {};
 

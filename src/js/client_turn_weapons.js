@@ -1,3 +1,7 @@
+// ********************** //
+// RECUPERATION DES ARMES //
+// ********************** //
+
 // observe la position de déplacement pour récup des armes
 function movePlayerWeaponsConditions() {
     if (dataCells.startPlayerDataY === dataCells.endPlayerDataY && dataCells.startPlayerDataX <= dataCells.endPlayerDataX) {

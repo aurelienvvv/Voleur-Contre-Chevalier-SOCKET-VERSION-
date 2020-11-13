@@ -1,3 +1,6 @@
+// ********************* //
+// DETECTION DE L'ENNEMI //
+// ********************* //
 function checkEnemyForFightAllDirections() {
     checkEnemyForFight('x', dataCells.endPlayerDataX - 1, 'y', dataCells.endPlayerDataY);
     checkEnemyForFight('x', dataCells.endPlayerDataX + 1, 'y', dataCells.endPlayerDataY);
@@ -45,27 +48,19 @@ socket.on('fightPlayerOptions', (playerAttr)=> {
     $(`.players-wrapper .${playerAttr} .fight-options`).addClass('active');
 });
 
+// *********************** //
+// AU CLICK BOUTON ATTAQUE //
+// *********************** //
 $(`.players-wrapper .btn-attack`).unbind().on('click', () => {
     // choix d'attaquer ou de defendre
     $(`.players-wrapper .fight-options`).removeClass('active');
 
     socket.emit('clickAttack', '');
-
-    // this.damagesOnHit();
-
-    // animation css à l'attaque
-    // this.classOnAttack();
-
-    // relance un tour ou termine la partie
-    // this.fightCondition();
 });
 
 socket.on('classOnAttack', (enemy) => {
         $('.cell').removeClass('attack-now');
         $('.cell').removeClass('attacked');
-
-        console.log('classOnAttack')
-        console.log(enemy[0].dataAttr)
 
         // Retire le bouclier de l'ennemi si il en a un
         $(`[data-player = ${enemy[0].dataAttr}]`).removeClass('protect');
