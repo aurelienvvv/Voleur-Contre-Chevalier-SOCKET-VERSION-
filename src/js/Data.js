@@ -2,6 +2,7 @@ module.exports = Data = {
     currentPlayer: null,
     nbOfCells: 100,
     xMaxCells: 9,
+    fightTime: false,
     nbOfWalls: 18,
     nbOfWeapons: 7,
     countTurnFight: 0,

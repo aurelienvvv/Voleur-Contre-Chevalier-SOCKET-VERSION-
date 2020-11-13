@@ -27,7 +27,7 @@ module.exports = class Turn {
     };
 
     initEvent(io, channel, socket) {
-        // // au click sur le bouton de défense
+        // au click sur le bouton de défense
         // $(`.players-wrapper .${this.player.dataAttr} .btn-defense`).unbind().on('click', () => {
         //     this.enemy = game.arrOfPlayers.filter(player => this.player.dataAttr !== player.dataAttr);
         //     $(`.players-wrapper .fight-options`).removeClass('active');
@@ -40,23 +40,22 @@ module.exports = class Turn {
         //     this.fightCondition();
         // });
 
-        // // au click sur le bouton d'attaque
-        // $(`.players-wrapper .${this.player.dataAttr} .btn-attack`).unbind().on('click', () => {
-        //     // choix d'attaquer ou de defendre
-        //     this.enemy = game.arrOfPlayers.filter(player => this.player.dataAttr !== player.dataAttr);
-        //     $(`.players-wrapper .fight-options`).removeClass('active');
+        // au click sur le bouton d'attaque
+    }
 
-        //     this.damagesOnHit();
+    playerOnAttack(io, channel, enemy) {
+            this.enemy = enemy;
 
-        //     // animation css à l'attaque
-        //     this.classOnAttack();
+            this.damagesOnHit();
 
-        //     // retire true à protect de l'ennemi
-        //     this.enemy[0].protect = false;
+            // animation css à l'attaque
+            io.in(channel).emit('classOnAttack', enemy);
 
-        //     // relance un tour ou termine la partie
-        //     this.fightCondition();
-        // });
+            // retire true à protect de l'ennemi
+            this.enemy[0].protect = false;
+
+            // relance un tour ou termine la partie
+            // this.fightCondition(io, channel);
     }
 
     displayInfosPlayer(io, channel) {
@@ -78,7 +77,8 @@ module.exports = class Turn {
 
     playerMoveUpdateDom(io, channel, dataCells, game) {
         let dataPlayer = Data.currentPlayer.dataAttr;
-        let playersWeapon = []
+        let playersWeapon = [];
+        let fightTime = Data.fightTime;
 
         // envoie les armes aux joueurs à chaque tour
         game.arrOfPlayers.forEach(player => {
@@ -88,7 +88,7 @@ module.exports = class Turn {
                 });
         });
 
-        io.in(channel).emit('playerMoveUpdateDom', dataPlayer, dataCells, playersWeapon);
+        io.in(channel).emit('playerMoveUpdateDom', dataPlayer, dataCells, playersWeapon, fightTime);
     };
 
     takeWeapon(io, channel, dataWeapons, weapon) {
@@ -113,56 +113,17 @@ module.exports = class Turn {
         };
     };
 
-    checkEnemyForFight(attrEnemy, positionEnemy, attr, position) {
-        if ($(`[data-${attrEnemy} = ${positionEnemy}][data-${attr} = ${position}]`).hasClass('player')) {
-            $(`[data-${attrEnemy} = ${positionEnemy}][data-${attr} = ${position}]`).addClass('attack-enemy');
 
-            // detecte la position de l'ennemi et ajoute une classe correspondante
-            this.enemyPosition(attrEnemy, positionEnemy);
+    enemyPosition(io, channel, attrEnemy, positionEnemy) {
+        let player = this.player;
 
-            // ajout des classes pour le combat
-            this.fightTimeDOM();
-        };
+        io.to(channel).emit('enemyPosition', player, attrEnemy, positionEnemy);
     };
 
-    enemyPosition(attrEnemy, positionEnemy) {
-        // detecte la position de l'ennemi et ajoute une classe correspondante
-        if (attrEnemy === "y" && positionEnemy === this.dataY - 1) {
-            $(`[data-player=${this.player.dataAttr}]`).addClass('top-enemy');
-            $('.cells').addClass('vertical-fight');
 
-        } else if (attrEnemy === "y" && positionEnemy === this.dataY + 1) {
-            $(`[data-player=${this.player.dataAttr}]`).addClass('bottom-enemy');
-            $('.cells').addClass('vertical-fight');
-
-        } else if (attrEnemy === "x" && positionEnemy === this.dataX + 1) {
-            $(`[data-player=${this.player.dataAttr}]`).addClass('right-enemy');
-            $(`[data-player=${this.player.dataAttr}]`).removeClass('to-left');
-
-        } else if (attrEnemy === "x" && positionEnemy === this.dataX - 1) {
-            $(`[data-player=${this.player.dataAttr}]`).addClass('left-enemy');
-            $(`[data-player=${this.player.dataAttr}]`).addClass('to-left');
-        }
-    };
-
-    fightTimeDOM() {
-        $('body').addClass('fight-time');
-        $('.cell').removeClass('can-go');
-        $('.cell').off('click');
-        $(`.players-wrapper .${this.player.dataAttr} .fight-options`).addClass('active');
-
-        // zoom visuel sur les joueurs au moment du combat
-        this.zoomOnFight();
-    }
-
-    checkEnemyAllDirections() {
-        this.checkEnemyForFight('x', this.dataX - 1, 'y', this.dataY);
-        this.checkEnemyForFight('x', this.dataX + 1, 'y', this.dataY);
-        this.checkEnemyForFight('y', this.dataY - 1, 'x', this.dataX);
-        this.checkEnemyForFight('y', this.dataY + 1, 'x', this.dataX);
-    };
-
-    fightCondition() {
+    fightCondition(ioC, channel, player, socket) {
+        // TO DO
+        // TO DO
         if (this.enemy[0].life <= 0) {
             let dataEnemy = $(`[data-player = ${this.enemy[0].dataAttr}]`);
 
@@ -171,19 +132,25 @@ module.exports = class Turn {
             this.enemy[0].updatePlayerDom(this.enemy[0]);
 
             this.endFightAnimations(dataEnemy);
+        // TO DO
+        // TO DO
+
         } else {
-            // sinon met à jour les classes du DOM
-            $(`[data-player = ${this.player.dataAttr}]`).removeClass('current-player');
+            let enemyAttr = this.enemy[0].dataAttr
+
+            ioC.in(channel).emit('removeClassCurrentPlayer', player)
 
             // met les données du tableau du joueur
-            this.enemy[0].updatePlayerDom(this.enemy[0]);
+            this.enemy[0].updatePlayerDom(this.enemy[0], ioC, channel);
 
-
+            
             // sélectionne l'autre joueur
-            Utils.selectPlayer();
+            Utils.selectPlayer(ioC, channel);
+            
+            socket.to(channel).emit('fightPlayerOptions', enemyAttr);
 
             // relance un tour
-            new Turn();
+            // new Turn(ioC, channel, socket);
         };
     };
 
@@ -194,33 +161,6 @@ module.exports = class Turn {
         $(`[data-player = ${this.player.dataAttr}]`).addClass('protect');
     };
 
-    classOnAttack() {
-        $('.cell').removeClass('attack-now');
-        $('.cell').removeClass('attacked');
-
-        // Retire le bouclier de l'ennemi si il en a un
-        $(`[data-player = ${this.enemy[0].dataAttr}]`).removeClass('protect');
-
-        // barre de vie css
-        $(`.${this.enemy[0].dataAttr} .life-line`).css('width', `${this.enemy[0].life}%`);
-
-        if (this.enemy[0].life < 20) {
-            $(`.${this.enemy[0].dataAttr} .life-line`).addClass('-red').removeClass('-orange');
-        }
-
-        else if (this.enemy[0].life < 40) {
-            $(`.${this.enemy[0].dataAttr} .life-line`).addClass('-orange').removeClass('-yellow');
-        }
-
-        else if (this.enemy[0].life < 60) {
-            $(`.${this.enemy[0].dataAttr} .life-line`).addClass('-yellow');
-        }
-
-        // classe qui ajoute une animation visuelle
-        $('.current-player').addClass('attack-now');
-        $(`[data-player = ${this.enemy[0].dataAttr}]`).addClass('attacked');
-    };
-
     damagesOnHit() {
         // dégat selon l'arme possédée
         if (this.currentPlayerWeapon.damage) {
@@ -228,19 +168,6 @@ module.exports = class Turn {
         } else {
             this.enemy[0].protect ? this.enemy[0].life -= 1 : this.enemy[0].life -= 2;
         };
-    };
-
-    zoomOnFight() {
-        // supprimer toutes les cases qui ne contiennent pas les joueurs
-        let hasNotPlayer = $(".cell:not(.player)");
-
-        hasNotPlayer.addClass('disapered');
-        $('.fight-time-text').addClass('active');
-
-        setTimeout(() => {
-            hasNotPlayer.hide();
-            $('.cells').addClass('-flex-cells');
-        }, 1000)
     };
 
     endFightAnimations(dataEnemy) {

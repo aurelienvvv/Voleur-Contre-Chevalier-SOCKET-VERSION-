@@ -14,6 +14,7 @@ http.listen(PORT, () => {
     console.log('listening on *:3000');
 });
 
+const Data  = require("./src/js/Data");
 const Utils  = require("./src/js/Utils");
 const Turn  = require("./src/js/Turn");
 const Game  = require("./src/js/Game");
@@ -61,7 +62,18 @@ io.on('connection', socket =>  {
 
         Utils.selectPlayer(io, channelUser);
         game.turn = new Turn(io, channelUser, socket);
+        Data.fightTime = false;
     });
+
+    socket.on('clickAttack', () => {
+        let currentUser = users.filter(user => user.id === socket.id)[0];
+        let channelUser = currentUser.channel;
+        let currentPlayer = game.arrOfPlayers.filter(player => player.id === currentUser.id)[0];
+        let enemy = game.arrOfPlayers.filter(player => currentPlayer.dataAttr !== player.dataAttr);
+
+        game.turn.playerOnAttack(io, channelUser, enemy);
+        game.turn.fightCondition(io, channelUser, currentPlayer, socket)
+    })
 
     socket.on('dataWeaponsClient', (dataWeapons) => {
         // récupération des infos de l'arme du DOM
@@ -71,6 +83,16 @@ io.on('connection', socket =>  {
 
         game.turn.takeWeapon(io, channelUser, dataWeapons, weapon);
     }),
+
+    socket.on('fightTimeDOM', (attrEnemy, positionEnemy) => {
+        let currentUser = users.filter(user => user.id === socket.id)[0];
+        let channelUser = currentUser.channel;
+        let currentPlayerAttr = game.arrOfPlayers.filter(player => player.id === currentUser.id)[0].dataAttr;
+        Data.fightTime = true;
+
+        game.turn.enemyPosition(io, channelUser, attrEnemy, positionEnemy);
+        socket.to(channelUser).emit('fightPlayerOptions', currentPlayerAttr);
+    });
 
     socket.on('newUser', (name) => {
         users.push({ id: socket.id, name: name });
