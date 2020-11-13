@@ -4,7 +4,7 @@
   "description": "Jeu en javascript créé pour le projet 6 de OpenClassrooms",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
