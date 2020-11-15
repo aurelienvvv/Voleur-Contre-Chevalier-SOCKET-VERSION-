@@ -94,17 +94,14 @@ module.exports = class Turn {
     };
 
     takeWeapon(io, channel, dataWeapons, weapon) {
-        let canTakeWeapon = false;
+        let canTakeWeapon = true;
         let ioC = io;
 
         if (dataWeapons.cellWeapon) {
             if (this.player.weapon !== 'Aucune') { 
-                canTakeWeapon = true;
-                console.log("dataWeapons.cellWeapon")
 
                 if (dataWeapons.isWeaponPlayer) {
                     canTakeWeapon = false; 
-                    console.log('isWeaponPlayer');
                 };
             };
 
