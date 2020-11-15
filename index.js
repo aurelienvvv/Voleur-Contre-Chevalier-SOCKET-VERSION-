@@ -60,7 +60,6 @@ io.on('connection', socket =>  {
         // met à jour la position du joueur sur la case
         game.turn.playerMoveUpdateDom(io, channelUser, dataCells, game);
 
-        Utils.selectPlayer(io, channelUser);
         game.turn = new Turn(io, channelUser, socket);
         Data.fightTime = false;
     });
@@ -80,7 +79,7 @@ io.on('connection', socket =>  {
         let weapon = game.arrOfWeapons.filter(weapon => weapon.dataAttr === dataWeapons.cellWeapon);
         let currentUser = users.filter(user => user.id === socket.id)[0];
         let channelUser = currentUser.channel;
-
+        
         game.turn.takeWeapon(io, channelUser, dataWeapons, weapon);
     }),
 

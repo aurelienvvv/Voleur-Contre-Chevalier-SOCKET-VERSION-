@@ -5,13 +5,12 @@ $('body').on('click', '.cells-container .cell.can-go', (e) => {
     let $obj = $(e.currentTarget);
     let $currentPlayer = $('.current-player');
 
-    console.log($currentPlayer);
-
     dataCells.startPlayerDataX = $currentPlayer.data('x');
     dataCells.startPlayerDataY = $currentPlayer.data('y');
     dataCells.endPlayerDataX = $obj.data('x');
     dataCells.endPlayerDataY = $obj.data('y');
 
+    movePlayerWeaponsConditions();
     checkEnemyForFightAllDirections();
     
     socket.emit('clickCanGo', dataCells);
@@ -30,8 +29,6 @@ socket.on('playerMoveUpdateDom', (dataPlayer, cells, playersWeapon, fightTime) =
     playersWeapon.forEach(player => {
         $(`[data-player = ${player.name}]`).attr('data-player-weapon', player.weapon);
     });
-
-    movePlayerWeaponsConditions();
 
     // Fight Time
     if (fightTime) {

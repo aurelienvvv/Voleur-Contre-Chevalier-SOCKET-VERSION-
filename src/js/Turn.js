@@ -13,7 +13,7 @@ module.exports = class Turn {
         this.displayInfosPlayer(io, channel);
 
         // ajoute les classes can-go aux axes x et y
-        this.whereCanGo(socket, channel);
+        this.whereCanGo(io, channel);
 
         // empêche de traverser les murs
         this.checkWalls(io, channel);
@@ -65,9 +65,9 @@ module.exports = class Turn {
         io.in(channel).emit('displayInfosPlayer', this.playerAttr)
     };
 
-    whereCanGo(socket, channel) {
+    whereCanGo(io, channel) {
         // variables pour les déplacements
-        socket.to(channel).emit('whereCanGo');
+        io.to(Data.currentPlayer.id).emit('whereCanGo');
     };
 
     checkWalls(io, channel) {
@@ -89,23 +89,32 @@ module.exports = class Turn {
         });
 
         io.in(channel).emit('playerMoveUpdateDom', dataPlayer, dataCells, playersWeapon, fightTime);
+
+        Utils.selectPlayer(io, channel);
     };
 
     takeWeapon(io, channel, dataWeapons, weapon) {
-        let canTakeWeapon = true;
+        let canTakeWeapon = false;
         let ioC = io;
 
         if (dataWeapons.cellWeapon) {
             if (this.player.weapon !== 'Aucune') { 
+                canTakeWeapon = true;
+                console.log("dataWeapons.cellWeapon")
+
                 if (dataWeapons.isWeaponPlayer) {
                     canTakeWeapon = false; 
-                } 
+                    console.log('isWeaponPlayer');
+                };
             };
+
+            console.log(canTakeWeapon);
 
             let player = this.player;
 
             // Envoie les infos du joueur et de l'arme au channel
             ioC.in(channel).emit('sendWeaponClient', canTakeWeapon, player, dataWeapons);
+            this.tookWeapon = true;
             
             // met à jour l'arme et le tableau du joueur
             this.player.weapon = weapon[0];
@@ -113,13 +122,11 @@ module.exports = class Turn {
         };
     };
 
-
     enemyPosition(io, channel, attrEnemy, positionEnemy) {
         let player = this.player;
 
         io.to(channel).emit('enemyPosition', player, attrEnemy, positionEnemy);
     };
-
 
     fightCondition(ioC, channel, player, socket) {
         // TO DO

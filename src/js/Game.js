@@ -37,7 +37,7 @@ module.exports = class Game {
         $(`.player .life-line`).removeClass('-red -orange -yellow');
     }
 
-    definePlayers(users, io, channel) {
+    definePlayers(users, io, channel) {        
         users.map(user => user.status = 'onPlay');
         let player1 = users[0];
         let player2 = users[1];
